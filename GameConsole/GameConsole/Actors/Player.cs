@@ -5,21 +5,22 @@ namespace GameConsole.Actors
 {
     public class Player : ReceiveActor
     {
-        private const int DEFAULT_HEALTH = 100;
+        private const int DefaultHealth = 100;
 
         private readonly string _playerName;
-        private readonly int _health;
+        private int _health;
         public Player(string playerName, int startingHealth)
         {
             _playerName = playerName;
             _health = startingHealth;
 
-            Receive<RequestPlayerStatus>(message => HandleRequestPlayerStatus(message));
+            Receive<RequestPlayerStatus>(HandleRequestPlayerStatus);
+            Receive<HitPlayer>(HandleHitPlayer);
         }
 
         public static Props Props(string playerName)
         {
-            return Akka.Actor.Props.Create(() => new Player(playerName, DEFAULT_HEALTH));
+            return Props(playerName, DefaultHealth);
         }
 
         public static Props Props(string playerName, int startingHealth)
@@ -27,6 +28,10 @@ namespace GameConsole.Actors
             return Akka.Actor.Props.Create(() => new Player(playerName, startingHealth));
         }
         
+        private void HandleHitPlayer(HitPlayer message)
+        {
+            _health -= message.Damage;
+        }
 
         private void HandleRequestPlayerStatus(RequestPlayerStatus message)
         {

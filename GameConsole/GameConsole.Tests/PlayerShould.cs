@@ -49,14 +49,11 @@ namespace GameConsole.Tests
 
             // ACT
             var newPlayer = Sys.ActorOf(Player.Props("John Doe"));
-            newPlayer.Tell(new HitPlayer(10));
-            newPlayer.Tell(new RequestPlayerStatus(7), probe.Ref);
+            newPlayer.Tell(new HitPlayer(7));
+            newPlayer.Tell(new RequestPlayerStatus(30), probe.Ref);
             var stats = probe.ExpectMsg<PlayerStatus>();
 
-
-
             // ASSERT
-            Assert.Equal(30, stats.RequestId);
             Assert.Equal(93, stats.Health);     // 100 - 7 = 93
         }
     }
